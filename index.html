@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Cuatro Vidas, Un Reino – Rumbo a 1789</title>
+<style>
+/* ===================== ESTILOS ===================== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:Georgia,"Times New Roman",serif;color:#3b2414;min-height:100vh;
+ background:radial-gradient(circle at 50% 30%,#f6e7c1 0%,#e9d3a1 60%,#c9a96b 100%);}
+#app{max-width:860px;margin:0 auto;padding:8px 10px 30px}
+header{position:sticky;top:0;z-index:20;background:rgba(240,222,180,.96);border-bottom:3px double #7a1f2b;padding:6px 6px 4px;border-radius:0 0 10px 10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.top h1{font-size:15px;margin:0;color:#7a1f2b;letter-spacing:.5px}
+.tb button{font-size:18px;padding:4px 8px;margin-left:2px}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;margin-top:4px}
+.bar{font-size:11px}
+.bar .tr{height:9px;background:#d8c08e;border:1px solid #7a5a32;border-radius:5px;overflow:hidden}
+.bar .fi{height:100%;width:50%;transition:width .6s;background:#7a1f2b}
+#main{margin-top:12px}
+.card{background:#f8edd2;border:2px solid #8a6a3a;border-radius:12px;padding:16px;box-shadow:0 4px 14px rgba(60,30,10,.25);animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{color:#7a1f2b;margin:4px 0 10px;font-size:22px}
+h3{color:#7a1f2b;margin:8px 0}
+p{line-height:1.5;font-size:16px}
+button{font-family:inherit;cursor:pointer;border:2px solid #7a1f2b;background:#fff6df;color:#5a1620;border-radius:9px;padding:10px 14px;font-size:16px;touch-action:manipulation}
+button:hover{background:#f3dcae}
+.big{display:block;width:100%;margin:8px 0;padding:14px;font-size:17px;text-align:left}
+.prim{background:#7a1f2b;color:#fff6df}
+.prim:hover{background:#962838}
+.center{text-align:center}
+input,select{font-family:inherit;font-size:16px;padding:8px;border:1px solid #8a6a3a;border-radius:7px;width:100%;background:#fffaf0;margin:4px 0 10px}
+label{font-weight:bold;font-size:14px}
+.banner{font-size:26px;text-align:center;color:#7a1f2b;animation:zoom 1.2s ease}
+@keyframes zoom{0%{opacity:0;transform:scale(.5)}60%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.emoji{font-size:54px;text-align:center}
+.arena{position:relative;height:320px;background:linear-gradient(#efe0b9,#dcc28b);border:2px solid #7a5a32;border-radius:10px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.it{position:absolute;font-size:36px;line-height:1;transform:translate(-50%,-50%);pointer-events:none}
+.tap{position:absolute;font-size:40px;transform:translate(-50%,-50%);cursor:pointer;animation:pop .2s}
+@keyframes pop{from{transform:translate(-50%,-50%) scale(.2)}to{transform:translate(-50%,-50%) scale(1)}}
+.hud{display:flex;justify-content:space-between;font-weight:bold;margin:6px 0}
+.lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
+.lanes button{padding:16px 0;font-size:18px}
+.zone{position:absolute;left:0;right:0;height:44px;bottom:12px;background:rgba(122,31,43,.18);border-top:2px dashed #7a1f2b;border-bottom:2px dashed #7a1f2b}
+.lanesep{position:absolute;top:0;bottom:0;width:1px;background:rgba(90,60,30,.3)}
+.simon{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.simon button{padding:22px 4px;font-size:18px}
+.simon button.lit{background:#e6b84a;transform:scale(1.05)}
+.opts button{display:block;width:100%;margin:6px 0;font-size:20px}
+.route{display:block;width:100%;text-align:left;margin:6px 0;font-size:15px}
+.timer{height:8px;background:#7a1f2b;border-radius:4px;transition:width .1s linear}
+.modal{position:fixed;inset:0;background:rgba(30,15,5,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:12px}
+.modal .card{max-height:85vh;overflow:auto;width:100%;max-width:640px}
+.hand{font-family:"Segoe Script","Brush Script MT","Lucida Handwriting",cursive;font-size:18px;line-height:1.6;background:#fbf3dc;border-left:4px solid #7a1f2b;padding:10px 14px;margin:10px 0}
+.dice{font-size:64px;text-align:center;font-weight:bold;color:#7a1f2b;margin:10px}
+.spin{animation:sp .15s linear infinite}
+@keyframes sp{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}100%{transform:rotate(-8deg)}}
+.small{font-size:13px;opacity:.85}
+.fx{font-weight:bold;color:#7a1f2b}
+@media(max-width:520px){.top h1{font-size:12px}h2{font-size:19px}p{font-size:15px}.arena{height:290px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="top"><h1>⚜️ Cuatro Vidas, Un Reino</h1>
+  <div class="tb"><button id="bDiar" title="Diarios">📔</button><button id="bGlos" title="Glosario">📖</button><button id="bSnd" title="Sonido">🔊</button><button id="bMenu" title="Menú">🏠</button></div></div>
+ <div class="bars" id="bars"></div>
+</header>
+<div id="main"></div>
+</div>
+<script>
+"use strict";
+/* ============================================================
+   SECCIÓN 1: UTILIDADES, TEMPORIZADORES, TECLADO Y SONIDO
+   ============================================================ */
+const $=s=>document.querySelector(s);
+function setHTML(sel,h){const e=$(sel);if(e)e.innerHTML=h;return e;}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+// Gestor central: listas separadas por tipo
+const T={iv:[],to:[],rf:[]};
+function sI(f,ms){const id=setInterval(f,ms);T.iv.push(id);return id;}
+function sT(f,ms){const id=setTimeout(f,ms);T.to.push(id);return id;}
+// Un único "manejador" por bucle: el ID se actualiza dentro, no se añade uno por frame
+function loop(fn){const h={on:true,id:0};let last=performance.now();
+ function st(t){if(!h.on)return;const dt=Math.min(50,t-last)/1000;last=t;if(fn(dt)===false){h.on=false;return;}h.id=requestAnimationFrame(st);}
+ h.id=requestAnimationFrame(st);T.rf.push(h);return h;}
+function clearAll(){T.iv.forEach(id=>clearInterval(id));T.to.forEach(id=>clearTimeout(id));
+ T.rf.forEach(h=>{h.on=false;cancelAnimationFrame(h.id);});T.iv=[];T.to=[];T.rf=[];remKey();}
+let keyH=null;
+function setKey(f){remKey();keyH=f;document.addEventListener('keydown',keyH);}
+function remKey(){if(keyH){document.removeEventListener('keydown',keyH);keyH=null;}}
+
+let AC=null,soundOn=true;
+function beep(f=440,d=.12,type='sine',v=.15){if(!soundOn)return;try{
+ if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;AC=new C();}
+ if(AC.state==='suspended')AC.resume();
+ const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
+ g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);
+ o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+const sGood=()=>beep(880,.1,'triangle'),sBad=()=>beep(160,.25,'sawtooth',.12);
+function sFanfare(){[523,659,784,1046].forEach((f,i)=>sT(()=>beep(f,.2,'triangle'),i*130));}
+
+/* ============================================================
+   SECCIÓN 2: ESTADO DEL JUEGO Y GUARDADO
+   ============================================================ */
+let S=null;
+function newState(){return{n:{c:'Jacques',n:'Henri de Montclair',k:'Antoine',b:'Marie Dupont'},clero:'cura',
+ ind:{h:40,d:40,i:20,p:60},t:30,f:{},diar:{c:[],n:[],k:[],b:[]},q:{c:[],n:[],k:[],b:[]},i:0,cap:0};}
+const SAVE='cvur_save_v1',ENDK='cvur_finales_v1';
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
+function loadSave(){try{const r=localStorage.getItem(SAVE);return r?JSON.parse(r):null;}catch(e){return null;}}
+function delSave(){try{localStorage.removeItem(SAVE);}catch(e){}}
+function getEnds(){try{return JSON.parse(localStorage.getItem(ENDK)||'[]');}catch(e){return[];}}
+function addEnd(id){try{const a=getEnds();if(a.indexOf(id)<0)a.push(id);localStorage.setItem(ENDK,JSON.stringify(a));return a.length;}catch(e){return 1;}}
+
+const IND={h:'🍞 Hambre del pueblo',d:'💰 Deuda del rey',i:'💡 Ideas ilustradas',p:'🛡️ Defensa de privilegios'};
+function applyFx(fx){if(!fx)return;for(const k in fx){if(k==='t')S.t=clamp(S.t+fx.t,0,100);else if(S.ind[k]!==undefined)S.ind[k]=clamp(S.ind[k]+fx[k],0,100);}drawBars();}
+function fxText(fx){if(!fx)return'';const o=[];for(const k in fx){if(k==='t'){o.push('❓ algo se mueve en el reino…');continue;}
+ if(IND[k]&&fx[k])o.push(IND[k]+' '+(fx[k]>0?'+':'')+fx[k]);}return o.join(' · ');}
+function drawBars(){if(!S){setHTML('#bars','');return;}let h='';for(const k in IND){h+=`<div class="bar">${IND[k]}: ${S.ind[k]}<div class="tr"><div class="fi" style="width:${S.ind[k]}%"></div></div></div>`;}setHTML('#bars',h);}
+function speed(extra){return 1+S.ind.h/110+(extra||0);}
+const K=()=>S.clero==='obispo';
+const tx=v=>typeof v==='function'?v(S):v;
+const WHO={c:'🧑‍🌾',n:'🎩',k:'⛪',b:'🧵'};
+function desc(w){return{c:'campesino de Champaña (Tercer Estado)',n:'noble de la corte de Versalles (Segundo Estado)',
+ k:K()?'obispo, alto clero (Primer Estado)':'cura de aldea, bajo clero (Primer Estado)',b:'burguesa comerciante de Lyon (Tercer Estado)'}[w];}
+
+/* ============================================================
+   SECCIÓN 3: DATOS — CAPÍTULOS, ESCENAS, EVENTOS
+   ============================================================ */
+const CAPS={
+1:{y:'1774',t:'Luis XVI sube al trono',x:['Luis XVI, con 19 años, hereda una monarquía absoluta: el rey concentra todos los poderes por voluntad divina.','La sociedad es estamental: clero, nobleza y Tercer Estado, que agrupa a más del 95 % de la población.','Los privilegiados apenas pagan impuestos directos; el peso recae sobre campesinos y burgueses.'],fx:{}},
+2:{y:'1778–1783',t:'Francia en la guerra de América',x:['Francia apoya a las Trece Colonias contra Gran Bretaña en su guerra de independencia.','La victoria cuesta una fortuna y el rey se endeuda con banqueros.','Los soldados vuelven hablando de libertad y de derechos.'],fx:{d:15,i:4}},
+3:{y:'1785–1786',t:'Las Luces y la crisis financiera',x:['Montesquieu defiende la división de poderes; Rousseau, la soberanía nacional; Voltaire, la tolerancia.','La Enciclopedia de Diderot y D’Alembert difunde la razón y la crítica.','El pago de los intereses de la deuda se come buena parte de los ingresos del Estado.'],fx:{i:8,d:6}},
+4:{y:'1787',t:'La Asamblea de Notables',x:['El ministro Calonne propone un impuesto sobre la tierra que pagarían también los privilegiados.','Los notables lo rechazan y Calonne cae.','El Parlamento de París se opone a los nuevos impuestos y el rey lo destierra a Troyes.'],fx:{d:5,t:4}},
+5:{y:'1788',t:'Granizo, hambre y pan caro',x:['El 13 de julio de 1788 una terrible granizada arrasa las cosechas del norte de Francia.','Llega un invierno durísimo y estalla una crisis de subsistencias.','El precio del pan se dispara: en algunos lugares se lleva más de la mitad del salario.'],fx:{h:15,t:6}},
+6:{y:'1789',t:'Los Estados Generales',x:['Sin dinero, el rey convoca los Estados Generales, que no se reunían desde 1614.','Sieyès pregunta: «¿Qué es el Tercer Estado? Todo. ¿Qué ha sido hasta ahora? Nada».','La gran disputa: ¿voto por estamento (uno por estamento) o voto por cabeza (uno por diputado)?'],fx:{i:5,t:5}}
+};
+
+const SC=[
+/* 0 */{cap:1,w:'c',tit:'La cosecha antes de la tormenta',
+ in:s=>`Verano de 1774. En tu aldea de Champaña el trigo está maduro y el cielo se oscurece. De cada espiga saldrán el pan de tu familia… y los impuestos.`,
+ g:'cesta',cfg:{good:['🌾'],bad:['🪨'],ins:'Mueve la cesta con el ratón, el dedo o las flechas ← → y recoge las espigas 🌾. ¡Evita las piedras 🪨!'},
+ ok:{h:-4},ko:{h:4,t:2},
+ op:[{t:'Entregar todo lo que se debe: rentas, diezmo y talla.',fx:{p:3,h:3},d:'He entregado lo que pedían. Este invierno comeremos poco.',q:'Pagamos rentas al señor, diezmo a la Iglesia y talla al rey, y apenas nos queda para el pan.'},
+     {t:'Esconder dos sacos de grano bajo el pajar.',f:'hid',fx:{h:-3,t:4},d:'He escondido dos sacos bajo el pajar. Si me descubren…',q:'Nos vemos obligados a esconder el grano para no morir de hambre.'}]},
+/* 1 */{cap:1,w:'n',tit:'El protocolo de Versalles',
+ in:s=>`Versalles brilla con el nuevo rey. Tu lugar en la corte depende de dominar la etiqueta: un gesto en falso y caerás en desgracia ante la reina María Antonieta.`,
+ g:'simon',cfg:{b:['🙇 Reverencia','🎩 Sombrero','🤚 Besamanos','🚶 Paso atrás'],ins:'Observa la secuencia de gestos del protocolo y repítela en el mismo orden. Tres rondas cada vez más largas.'},
+ ok:{p:3},ko:{p:-2},
+ op:[{t:'Subir las rentas de tus campesinos de Champaña: Versalles es caro.',f:'rentas',fx:{h:6,p:4,t:6},d:'He ordenado subir las rentas de mis tierras de Champaña.',q:'Exigimos que se respeten nuestros derechos señoriales, antiguos y legítimos.'},
+     {t:'Mantener las rentas y vender un cuadro para pagar tus deudas.',fx:{p:-1},d:'He vendido un cuadro antes que apretar a mis campesinos.',q:'Pedimos que la nobleza conserve sus honores, pero estamos dispuestos a escuchar.'}]},
+/* 2 */{cap:1,w:'k',tit:'El cálculo del diezmo',
+ in:s=>K()?`Desde tu palacio episcopal revisas las cuentas: el diezmo, la décima parte de la cosecha, sostiene tu diócesis… y tu carroza.`:`En tu humilde parroquia toca calcular el diezmo. Tú apenas recibes una pequeña parte, la porción congrua; el resto va al obispo y al cabildo.`,
+ g:'calc',cfg:{kind:'diezmo',ins:'Responde 5 preguntas de cálculo rápido sobre el diezmo (10 %) y los precios. Elige la opción correcta.'},
+ ok:{d:-1},ko:{t:2},
+ op:[{t:s=>K()?'Exigir el diezmo íntegro a todos.':'Cobrar el diezmo completo, como manda el obispo.',fx:{h:4,p:4,t:4},d:'He cobrado el diezmo entero. Es la ley de la Iglesia.',q:s=>K()?'La Iglesia debe conservar sus bienes y su exención fiscal.':'El diezmo es necesario, pero apenas llega a los curas pobres.'},
+     {t:'Perdonar el diezmo a la viuda Thérèse, que no puede pagar.',f:'perdona',fx:{h:-3,p:-2,t:-3},d:'He perdonado el diezmo a la viuda. La caridad es lo primero.',q:'Pedimos que el diezmo se destine a los pobres y a los curas de aldea.'}]},
+/* 3 */{cap:1,w:'b',tit:'La tienda de sedas',
+ in:s=>`Lyon es la capital europea de la seda. Tu tienda prospera, pero tú, que creas riqueza, no tienes ningún poder político. Hoy es día de mercado.`,
+ g:'reflejos',cfg:{good:['👗','🎀','👒'],bad:['🐀','🔥'],ins:'Pulsa las sedas 👗🎀👒 para venderlas (+1). ¡No toques las ratas ni el fuego (−2)!'},
+ ok:{d:-2,i:1},ko:{t:1},
+ op:[{t:'Comprar la Enciclopedia y prestarla a tus clientes.',f:'enciclo',fx:{i:8,t:3},d:'He comprado la Enciclopedia. ¡La razón ilumina el mundo!',q:'Pedimos libertad de pensamiento y de imprenta.'},
+     {t:'Guardar el dinero para ampliar el negocio.',fx:{i:1},d:'He ahorrado para comprar más telares.',q:'Pedimos que se supriman las aduanas interiores que frenan el comercio.'}]},
+/* 4 */{cap:2,w:'c',tit:'Los tres recaudadores',
+ in:s=>(s.f.rentas?`Tu señor, ${s.n.n}, ha subido las rentas y sus agentes vienen con prisa. `:'')+(s.f.hid?'Corre el rumor de que escondiste grano: hoy miran con lupa. ':'')+`Llegan a la vez el recaudador del señor, el de la Iglesia y el del rey. ¡Esconde los sacos!`,
+ g:'escondite',boost:s=>(s.f.rentas?.3:0)+(s.f.hid?.2:0),cfg:{item:'💰',ins:'Van apareciendo sacos 💰 por el campo. Púlsalos o arrástralos rápido para llevarlos al pajar antes de que los vea el recaudador.'},
+ ok:{h:-4},ko:{h:5,t:3},
+ op:[{t:'Cumplir la corvea: trabajar gratis en el camino del señor.',fx:{h:2,p:2},d:'Tres días de corvea arreglando el camino del señor. Mi campo, abandonado.',q:'Pedimos la abolición de la corvea y de los derechos señoriales.'},
+     {t:'Protestar con los vecinos en la plaza.',fx:{t:5},d:'Hemos gritado contra los recaudadores en la plaza.',q:'No podemos pagar a tres señores a la vez.'},
+     {t:s=>`Confiar tus quejas al padre ${s.n.k}, que perdonó el diezmo a la viuda.`,show:s=>!!s.f.perdona,f:'queja',fx:{t:-2,i:3},d:'El cura me escuchó y anotó mis quejas. Por fin alguien nos oye.',q:'Nuestro cura conoce bien nuestra miseria y puede hablar por nosotros.'}]},
+/* 5 */{cap:2,w:'n',tit:'La caza y la guerra de América',
+ in:s=>`1778: Francia entra en guerra junto a los rebeldes americanos. El rey pide préstamos a sus nobles. Mientras, sales de caza: solo los nobles pueden cazar.`,
+ g:'reflejos',cfg:{good:['🦌','🐗','🦃'],bad:['👨‍🌾','🐄'],ins:'Pulsa las piezas de caza 🦌🐗🦃 (+1). ¡Cuidado: no dispares a los campesinos ni a sus vacas (−2)!'},
+ ok:{p:2},ko:{p:-2},
+ op:[{t:'Prestar dinero al rey para la guerra, con buenos intereses.',fx:{d:6,p:2},d:'He prestado 50.000 libras a la Corona. Los intereses serán jugosos.',q:'Que el rey devuelva sus deudas a quienes le sirvieron.'},
+     {t:'Ampliar tu coto de caza y prohibir a los campesinos cazar los animales que destrozan sus campos.',f:'coto',fx:{h:4,p:4,t:5},d:'He ampliado el coto. La caza es un privilegio de mi sangre.',q:'La caza es derecho exclusivo de la nobleza y así debe seguir.'}]},
+/* 6 */{cap:2,w:'k',tit:'El sermón del domingo',
+ in:s=>(s.f.enciclo?`Algo ha cambiado: entre tus fieles circulan frases de la Enciclopedia llegadas de Lyon. Alguien pregunta si el rey gobierna por derecho divino. `:'')+(K()?'Predicas en la catedral ante nobles y canónigos.':'Predicas en tu pequeña iglesia ante campesinos cansados.'),
+ g:'simon',cfg:{b:['✝️ Santiguarse','📖 Leer','🙏 Rezar','🔔 Campana'],ins:'Memoriza la secuencia de gestos de la misa y repítela. Tres rondas crecientes.'},
+ ok:{p:2},ko:{i:2},
+ op:[{t:'Predicar la obediencia al rey y a la Iglesia.',fx:{p:3,i:-2},d:'He predicado obediencia: el orden lo quiere Dios.',q:'Que se mantenga la religión católica como única del reino.'},
+     {t:'Predicar la justicia: Dios no quiere que los pobres pasen hambre.',f:'justicia',fx:{i:4,t:3,p:-2},d:'He hablado de justicia. Algunos canónigos me miran mal.',q:'Que los ricos y los privilegiados contribuyan al bien común.'}]},
+/* 7 */{cap:3,w:'b',tit:'El comercio colonial',
+ in:s=>`El azúcar, el café y el algodón de las Antillas enriquecen a los comerciantes franceses. Pero esa riqueza se basa en el trabajo forzado de cientos de miles de personas africanas esclavizadas en Saint-Domingue.`,
+ g:'comercio',cfg:{ins:'Tres viajes. En cada uno, elige en 10 s la ruta con más beneficio (venta − compra), pero ¡evita las rutas con piratas ☠️!'},
+ ok:{d:-2,i:1},ko:{t:1},
+ op:[{t:'Invertir más en azúcar de las plantaciones.',fx:{i:-1},d:'He invertido en azúcar. Prefiero no pensar en cómo se cultiva.',q:'Pedimos libertad de comercio con las colonias.'},
+     {t:'Leer y difundir los escritos ilustrados que condenan la esclavitud.',f:'abol',fx:{i:5,t:1},d:'He leído a quienes dicen que ningún ser humano puede ser propiedad de otro.',q:'Ningún ser humano debería ser propiedad de otro.'}]},
+/* 8 */{cap:3,w:'c',tit:'La corvea y los lobos',
+ in:s=>(s.f.coto?`El señor ha ampliado su coto: ciervos y jabalíes destrozan tus campos y no puedes cazarlos. `:'')+`Toca otra vez la corvea: despejar de piedras el camino del señor mientras los lobos rondan.`,
+ g:'reflejos',cfg:{good:['🪨'],bad:['🐺'],ins:'Pulsa las piedras 🪨 para despejar el camino (+1). ¡No te acerques a los lobos 🐺 (−2)!'},
+ boost:s=>s.f.coto?.2:0,ok:{h:-2},ko:{h:4},
+ op:[{t:'Emigrar a París a buscar trabajo.',f:'paris',fx:{t:3},d:'Me voy a París. Dicen que allí hay jornal para quien lo busca.',q:'En las ciudades el pan es caro y el trabajo, escaso.'},
+     {t:'Quedarte a cuidar la tierra de tu familia.',fx:{h:2},d:'Me quedo. La tierra es lo único que tengo.',q:'Pedimos poder cazar los animales que destruyen nuestras cosechas.'}]},
+/* 9 */{cap:3,w:'n',tit:'El salón ilustrado',
+ in:s=>`París, 1785. En el salón de una marquesa se baila un minué y se debate a Montesquieu, Rousseau y Voltaire. Algunos nobles, como Lafayette, admiran a los americanos.`,
+ g:'ritmo',cfg:{ins:'¡Baila el minué! Pulsa A S D F o los botones de cada carril cuando la nota llegue a la zona marcada.'},
+ ok:{i:2},ko:{p:1},
+ op:[{t:'Abrazar las ideas liberales, como Lafayette.',f:'liberal',fx:{i:8,p:-5,t:-2},d:'Montesquieu tiene razón: el poder debe dividirse.',q:'Aceptamos una constitución que limite el poder del rey.'},
+     {t:'Defender la tradición: el rey y la nobleza son pilares del orden.',fx:{p:6,i:-3,t:3},d:'Esas ideas son peligrosas. Sin jerarquía, el caos.',q:'El orden de los estamentos es querido por Dios y por la historia.'}]},
+/* 10 */{cap:4,w:'k',tit:'Las cuentas de la Iglesia',
+ in:s=>K()?`1787. En la Asamblea de Notables se discute si la Iglesia, dueña de enormes tierras, debe pagar impuestos. Repasas las cifras de tu diócesis antes de votar.`:`1787. Llegan noticias de que el rey quiere que paguen también los privilegiados. Echas cuentas de lo poco que tienes y piensas escribir al obispo.`,
+ g:'calc',cfg:{kind:'precios',ins:'5 cálculos rápidos sobre cuentas, precios y repartos. Elige la respuesta correcta.'},
+ ok:{d:-1},ko:{t:2},
+ op:[{t:s=>K()?'Votar que la Iglesia pague impuestos sobre sus tierras.':'Escribir al obispo pidiendo que la Iglesia contribuya.',f:s=>K()?'iglesiaPaga':'carta',fx:s=>K()?{d:-6,p:-6,t:-4}:{i:3,t:2},d:s=>K()?'He votado que paguemos. Mis colegas no me lo perdonarán.':'He escrito al obispo. Seguramente ni la leerá.',q:'Los bienes de la Iglesia deben ayudar al reino en su necesidad.'},
+     {t:s=>K()?'Defender la exención fiscal de la Iglesia.':'Callar y obedecer al obispo.',f:s=>K()?'rechazo':null,fx:s=>K()?{p:6,t:6,d:3}:{p:1},d:s=>K()?'La Iglesia ya da al rey su «don gratuito». No pagaremos más.':'He callado. No es mi lugar.',q:s=>K()?'La Iglesia solo debe ofrecer al rey donativos voluntarios.':'Obedecemos a nuestros superiores.'}]},
+/* 11 */{cap:4,w:'b',tit:'El censor llama a la puerta',
+ in:s=>(s.f.enciclo?'El censor sabe que prestas la Enciclopedia. ':'')+`El rey ha desterrado al Parlamento de París a Troyes por oponerse a los impuestos. Hay protestas y el censor registra las librerías. ¡Esconde los libros prohibidos!`,
+ g:'escondite',boost:s=>s.f.enciclo?.2:0,cfg:{item:'📚',ins:'Aparecen libros prohibidos 📚 por la tienda. Púlsalos o arrástralos para esconderlos en el baúl antes de que los vea el censor.'},
+ ok:{i:3},ko:{i:-3,p:2},
+ op:[{t:'Unirte a las protestas a favor del Parlamento.',f:'protesta',fx:{i:4,t:5},d:'He gritado «¡Viva el Parlamento!». El rey no puede hacer lo que quiera.',q:'El rey no puede imponer tributos sin el consentimiento de la nación.'},
+     {t:'Cerrar la tienda y esperar a que pase.',fx:{p:1},d:'He cerrado la tienda. La prudencia también es una virtud.',q:'Pedimos seguridad para el comercio.'}]},
+/* 12 */{cap:4,w:'c',tit:'El recaudador vuelve',
+ in:s=>(s.f.paris?'Has vuelto un tiempo a la aldea desde París. ':'')+(s.f.hid?'El recaudador no ha olvidado tus sacos escondidos: hoy te vigila con especial atención. ':'')+`Recoges el grano de la era mientras el recaudador de la talla ronda.`,
+ g:'reflejos',boost:s=>s.f.hid?.35:0,cfg:{good:['🌾'],bad:['🕵️'],ins:'Pulsa el grano 🌾 para guardarlo (+1). ¡Si pulsas al recaudador 🕵️, te pilla (−2)!'},
+ ok:{h:-3},ko:{h:4,t:2},
+ op:[{t:'Firmar con la comunidad una queja contra la talla.',fx:{t:3,i:2},d:'Hemos firmado una queja. Hasta el maestro la ha leído en voz alta.',q:'Que paguen todos según su riqueza, también nobles y clero.'},
+     {t:'Pagar la talla sin rechistar.',fx:{h:3},d:'He pagado. Otra vez sopa sin pan.',q:'La talla solo la pagamos los pobres.'}]},
+/* 13 */{cap:4,w:'n',tit:'La Asamblea de Notables',
+ in:s=>`Calonne propone un impuesto sobre la tierra para todos, también para los privilegiados. `+(s.f.iglesiaPaga?`El obispo ${s.n.k} ya ha votado que la Iglesia pague. `:'')+(s.f.liberal?'Tus amigos liberales te miran esperando tu voto.':'Tus parientes te recuerdan que tu linaje nunca ha pagado.'),
+ g:'cesta',cfg:{good:['📜'],bad:['🍅'],ins:'Recoge los votos 📜 con tu cesta (ratón, dedo o ← →) y esquiva los tomates 🍅 de los descontentos.'},
+ ok:{p:2},ko:{p:-2},
+ op:[{t:'Aceptar que los privilegiados paguen el nuevo impuesto.',f:'reformaNoble',fx:{d:-8,p:-8,t:-5},d:'He votado sí. Es eso o la ruina del reino.',q:'Aceptamos pagar impuestos en igualdad con el resto de los súbditos.'},
+     {t:'Rechazarlo: los privilegios no se tocan.',f:'rechazo',fx:{p:8,t:8,d:5},d:'Hemos tumbado a Calonne. Que pague quien siempre ha pagado.',q:'Nos negamos a renunciar a nuestras exenciones fiscales.'}]},
+/* 14 */{cap:5,w:'k',tit:'El invierno del hambre',
+ in:s=>`Invierno de 1788–1789: los ríos se congelan y el pan escasea. `+(K()?'Los graneros del obispado están llenos.':'El pequeño granero de la parroquia guarda algo de trigo.')+' A la puerta hay familias hambrientas.',
+ g:'reflejos',cfg:{good:['🧒','👵','👨‍👩‍👧'],bad:['🦹'],ins:'Reparte pan pulsando a las familias hambrientas 🧒👵👨‍👩‍👧 (+1). ¡No se lo des a los acaparadores 🦹 (−2)!'},
+ ok:{h:-4},ko:{h:3},
+ op:[{t:'Abrir los graneros y repartir el trigo.',f:'graneros',fx:{h:-8,p:-3,t:-5},d:'He abierto los graneros. Hoy nadie ha muerto de hambre en mi puerta.',q:'Pedimos que los graneros eclesiásticos alimenten a los pobres en tiempos de hambre.'},
+     {t:s=>K()?'Vender el trigo a buen precio en la ciudad.':'Guardar el trigo para la primavera.',fx:{h:5,t:5},d:'He guardado el trigo. Las miradas de la gente me queman.',q:'Pedimos que se castigue a los acaparadores.'}]},
+/* 15 */{cap:5,w:'b',tit:'¿Un título o un club?',
+ in:s=>`Con el pan caro, la gente compra menos seda y tus ventas caen. Aun así, tienes ahorros. Puedes comprar un cargo que te ennoblezca… o fundar un club donde se debata el futuro del reino.`,
+ g:'calc',cfg:{kind:'subidas',ins:'5 cálculos rápidos sobre subidas de precios y ganancias. ¡Rápido!'},
+ ok:{d:-1},ko:{t:1},
+ op:[{t:'Comprar un cargo que ennoblece y dejar de pagar la talla.',f:'titulo',fx:{p:3,i:-2},d:'¡Ya casi soy noble! Aunque los nobles de sangre me desprecian.',q:'Pedimos que el talento permita ascender en la sociedad.'},
+     {t:'Fundar un club ilustrado en Lyon.',f:'club',fx:{i:8,t:4},d:'Hemos fundado el club. Leemos a Rousseau: la soberanía reside en la nación.',q:'La soberanía reside en la nación, no en un solo hombre.'}]},
+/* 16 */{cap:5,w:'c',tit:'La granizada',
+ in:s=>(s.f.paris?'Estás en París cuando te llega la noticia: la granizada ha destrozado los campos de tu familia en Champaña. ':'13 de julio de 1788: el cielo se vuelve blanco. ')+(s.f.justicia?`El cura ${s.n.k} decía que Dios no quiere el hambre. Hoy lo piensas mucho. `:'')+'¡Salva lo que puedas!',
+ g:'cesta',boost:()=>.35,cfg:{good:['🌾','🥕'],bad:['🧊'],ins:'¡Salva espigas y verduras 🌾🥕 con la cesta y esquiva el granizo 🧊! Ratón, dedo o ← →.'},
+ ok:{h:-3},ko:{h:6,t:3},
+ op:[{t:'Compartir lo poco que queda con los vecinos.',fx:{h:-2,t:-1},d:'Hemos compartido lo poco que quedaba. Juntos aguantaremos.',q:'Pedimos ayuda del rey para las aldeas arruinadas por el granizo.'},
+     {t:'Marchar al mercado a exigir pan a precio justo.',f:'motinPrevio',fx:{t:6},d:'En el mercado hemos obligado a vender el pan a precio justo.',q:'Pedimos que el precio del pan se fije para que el pueblo pueda comer.'}]},
+/* 17 */{cap:6,w:'n',tit:'El grano y los Estados Generales',
+ in:s=>`El rey ha convocado los Estados Generales para mayo de 1789. Mientras, el trigo vale oro. Tus graneros están llenos.`,
+ g:'simon',cfg:{b:['🙇 Reverencia','📜 Firma','🗝️ Llave','🍷 Brindis'],ins:'Memoriza la secuencia del ceremonial de la convocatoria y repítela. Tres rondas.'},
+ ok:{p:2},ko:{p:-2},
+ op:[{t:'Especular: esperar a que el precio suba aún más.',f:'especula',fx:{h:8,t:8},d:'Venderé en primavera, cuando el trigo valga el doble.',q:'Defendemos la libertad de vender nuestras cosechas cuando queramos.'},
+     {t:'Vender el grano a un precio justo a los panaderos.',fx:{h:-4,t:-3},d:'He vendido a precio justo. Mi administrador cree que he perdido el juicio.',q:'La nobleza debe dar ejemplo en tiempos de necesidad.'}]},
+/* 18 */{cap:6,w:'k',tit:'Elegir bando',
+ in:s=>(s.f.club?`Del club de ${s.n.b} en Lyon llegan panfletos que piden el voto por cabeza. `:'')+(K()?'Eres diputado del clero. Muchos curas de tu diócesis simpatizan con el Tercer Estado.':'¡Has sido elegido diputado! Muchos curas como tú se sienten más cerca del pueblo que de los obispos.'),
+ g:'ritmo',cfg:{ins:'¡Repican las campanas de la elección! Pulsa A S D F o los botones cuando cada nota llegue a la zona marcada.'},
+ ok:{i:2},ko:{p:1},
+ op:[{t:'Defender el voto por estamento, que favorece a los privilegiados.',f:'rechazo',fx:{p:5,t:5},d:'El clero debe votar unido y separado. Así manda la tradición.',q:'Que los Estados Generales voten por estamento, como en 1614.'},
+     {t:'Apoyar al Tercer Estado y el voto por cabeza.',f:'uneTercer',fx:{i:5,p:-4,t:2},d:'Si el Tercer Estado se reúne aparte, iré con ellos.',q:'Que los diputados de todos los estamentos deliberen juntos.'}]},
+/* 19 */{cap:6,w:'b',tit:'La imprenta de panfletos',
+ in:s=>`Enero de 1789: el folleto de Sieyès «¿Qué es el Tercer Estado?» corre de mano en mano. Has conseguido una imprenta. ¡A imprimir antes de que llegue el censor!`,
+ g:'reflejos',cfg:{good:['📄','📰'],bad:['👁️'],ins:'Pulsa los panfletos 📄📰 para imprimirlos (+1). ¡Evita el ojo del censor 👁️ (−2)!'},
+ ok:{i:4},ko:{i:-2},
+ op:[{t:'Exigir el voto por cabeza: el Tercer Estado es la nación.',f:'porCabeza',fx:{i:6,t:6},d:'«¡El Tercer Estado lo es todo!». Mil copias impresas.',q:'Exigimos el voto por cabeza y una constitución para Francia.'},
+     {t:'Proponer una reforma moderada pactada con el rey.',fx:{i:2,t:-2},d:'He propuesto un acuerdo con el rey. Quizá aún sea posible.',q:'Pedimos reformas pactadas con nuestro buen rey.'}]},
+/* 20 */{cap:6,w:'c',tit:'El motín del pan',
+ in:s=>(s.f.especula?`Se sabe que el noble ${s.n.n} guarda trigo para venderlo más caro: la gente está furiosa y los guardias, nerviosos. `:'')+'Primavera de 1789. Una multitud rodea la panadería. Hay que conseguir pan para tu familia… y decidir qué hacer.',
+ g:'cesta',boost:s=>s.f.especula?.35:.1,cfg:{good:['🥖','🍞'],bad:['💂'],ins:'Atrapa los panes 🥖🍞 con la cesta y esquiva a los guardias 💂. Ratón, dedo o ← →.'},
+ ok:{h:-3},ko:{h:4,t:3},
+ op:[{t:'Unirte al motín y asaltar los almacenes.',f:'motin',fx:{t:10,h:-3},d:'Hemos asaltado el almacén. Ya no tenemos miedo.',q:'¡Pan, o tomaremos lo que nos pertenece!'},
+     {t:'Redactar con la aldea un cuaderno de quejas pacífico.',fx:{t:-3,i:2},d:'Hemos escrito nuestras quejas. El rey las leerá… ¿verdad?',q:'Confiamos en que nuestro rey escuche a su pueblo.'}]}
+];
+
+const EVENTS=[
+ {t:'Panfletos contra «Madame Déficit»',x:'Circulan caricaturas que culpan a la reina María Antonieta del despilfarro de la corte.',fx:{t:4,i:2}},
+ {t:'Epidemia en las aldeas',x:'Unas fiebres se extienden por el campo; faltan médicos y pan.',fx:{h:5,t:2}},
+ {t:'¡Buen tiempo!',x:'Un mes de sol y lluvias suaves: las cosechas mejoran.',fx:{h:-6}},
+ {t:'Gastos de la corte',x:'Versalles celebra fiestas suntuosas; la factura llega al Tesoro.',fx:{d:5,t:3}},
+ {t:'Préstamos de los banqueros',x:'Necker y otros ministros piden nuevos préstamos a banqueros a altos intereses.',fx:{d:6}},
+ {t:'La Declaración de Independencia',x:'Llega traducida: «todos los hombres son creados iguales». Se lee en los cafés.',fx:{i:6}},
+ {t:'Procesión solemne',x:'Una gran procesión recorre la ciudad; la Iglesia muestra su poder.',fx:{p:3,t:-2}},
+ {t:'Lobos en el ganado',x:'Los lobos atacan los rebaños y los campesinos no pueden cazarlos: la caza es privilegio señorial.',fx:{h:4,t:3}}
+];
+
+const GLOS=[
+['Antiguo Régimen','Sistema político, social y económico de Europa antes de las revoluciones liberales: monarquía absoluta, sociedad estamental y economía agraria.'],
+['Monarquía absoluta','El rey concentra los poderes legislativo, ejecutivo y judicial, y dice gobernar por derecho divino.'],
+['Estamentos','Grupos sociales cerrados a los que se pertenece por nacimiento: clero, nobleza y Tercer Estado.'],
+['Privilegios','Derechos especiales de clero y nobleza: exención de muchos impuestos, leyes y tribunales propios, honores.'],
+['Diezmo','Impuesto a la Iglesia equivalente a la décima parte de la cosecha.'],
+['Corvea','Trabajo gratuito y obligatorio que los campesinos debían hacer para el señor o el rey (caminos, tierras).'],
+['Talla','Principal impuesto directo del rey en Francia; lo pagaba sobre todo el Tercer Estado.'],
+['Señorío','Tierras y derechos de un señor sobre los campesinos que vivían en ellas (rentas, justicia, monopolios).'],
+['Burguesía','Grupo del Tercer Estado formado por comerciantes, banqueros, fabricantes y profesionales; rico pero sin poder político.'],
+['Ilustración','Movimiento intelectual del siglo XVIII que confía en la razón, critica la tradición y defiende la libertad y la igualdad ante la ley.'],
+['Montesquieu','Pensador ilustrado; en «El espíritu de las leyes» (1748) defendió la división de poderes.'],
+['Rousseau','Pensador ilustrado; en «El contrato social» (1762) defendió la soberanía nacional o popular.'],
+['Voltaire','Pensador ilustrado, crítico con la intolerancia religiosa y los abusos del poder; defendió la tolerancia.'],
+['Despotismo ilustrado','Monarcas absolutos que aplican reformas inspiradas en la Ilustración sin ceder poder: «todo para el pueblo, pero sin el pueblo».'],
+['Estados Generales','Asamblea con representantes de los tres estamentos que el rey convocaba excepcionalmente; en Francia no se reunía desde 1614.'],
+['Cuadernos de quejas','Documentos redactados en 1789 en todo el reino para presentar al rey las peticiones de cada estamento y localidad.']
+];
+
+/* ============================================================
+   SECCIÓN 4: INTERFAZ Y FLUJO DE ESCENAS
+   ============================================================ */
+function show(h){clearAll();setHTML('#main','<div class="card">'+h+'</div>');window.scrollTo(0,0);}
+function on(sel,f){const e=$(sel);if(e)e.addEventListener('click',()=>{beep(600,.05);f();});}
+
+function menu(){S=null;drawBars();const sv=loadSave();const n=getEnds().length;
+ show(`<div class="emoji">👑🧑‍🌾🎩⛪🧵</div><h2 class="center">Cuatro Vidas, Un Reino<br><small>Rumbo a 1789</small></h2>
+ <p class="center">Francia, 1774. Vas a vivir cuatro vidas a la vez. Tus decisiones cambiarán el destino del reino.</p>
+ <button class="big prim" id="mNew">▶️ Nueva partida</button>
+ ${sv?'<button class="big" id="mCont">⏩ Continuar partida</button>':''}
+ <button class="big" id="mGlos">📖 Glosario</button>
+ <p class="center small">Finales descubiertos: ${n}/7</p>`);
+ on('#mNew',create);on('#mGlos',glossary);if(sv)on('#mCont',()=>{S=sv;drawBars();next();});}
+
+function create(){S=newState();
+ show(`<h2>Crea tus personajes</h2>
+ <label>🧑‍🌾 Campesino de Champaña (Tercer Estado)</label><input id="nc" value="${S.n.c}" maxlength="25">
+ <label>🎩 Noble de la corte de Versalles (Segundo Estado)</label><input id="nn" value="${S.n.n}" maxlength="25">
+ <label>⛪ Clérigo (Primer Estado)</label><input id="nk" value="${S.n.k}" maxlength="25">
+ <select id="ck"><option value="cura">Cura de aldea: bajo clero, pobre, cercano al pueblo</option><option value="obispo">Obispo: alto clero, rico, cercano a la nobleza</option></select>
+ <label>🧵 Burguesa comerciante de Lyon (Tercer Estado)</label><input id="nb" value="${S.n.b}" maxlength="25">
+ <button class="big prim" id="go">⚜️ Comenzar la historia</button>`);
+ on('#go',()=>{const g=(id,d)=>{const e=$(id);const v=e?e.value.trim().replace(/[<>&"]/g,''):'';return v||d;};
+  S.n.c=g('#nc','Jacques');S.n.n=g('#nn','Henri de Montclair');S.n.k=g('#nk','Antoine');S.n.b=g('#nb','Marie Dupont');
+  const c=$('#ck');S.clero=c?c.value:'cura';delSave();drawBars();next();});}
+
+function next(){if(!S)return menu();const sc=SC[S.i];if(!sc)return finale1();
+ if(sc.cap!==S.cap)return chapter(sc.cap);banner(sc);}
+
+function chapter(c){const C=CAPS[c];S.cap=c;applyFx(C.fx);save();
+ show(`<p class="center small">Capítulo ${c} de 6</p><div class="banner">${C.y}</div><h2 class="center">${C.t}</h2>
+ ${C.x.map(x=>'<p>📜 '+x+'</p>').join('')}<p class="fx center">${fxText(C.fx)}</p><button class="big prim" id="go">Continuar ➜</button>`);
+ sFanfare();on('#go',()=>banner(SC[S.i]));}
+
+function banner(sc){show(`<div class="emoji">${WHO[sc.w]}</div><div class="banner">Ahora eres ${S.n[sc.w]}</div><p class="center">${desc(sc.w)}</p>`);
+ beep(392,.2,'triangle');sT(()=>intro(sc),1700);}
+
+function intro(sc){show(`<div class="emoji">${WHO[sc.w]}</div><h2>${sc.tit}</h2><p>${tx(sc.in)}</p>
+ <h3>🎮 Minijuego</h3><p>${sc.cfg.ins}</p><button class="big prim" id="go">¡A la acción!</button>`);
+ on('#go',()=>{const sp=speed(sc.boost?sc.boost(S):0);GAMES[sc.g](sc.cfg,sp,pct=>result(sc,pct));});}
+
+function result(sc,pct){clearAll();pct=clamp(Math.round(pct),0,100);const ok=pct>=60;const fx=ok?sc.ok:sc.ko;applyFx(fx);
+ ok?sFanfare():sBad();
+ show(`<div class="emoji">${ok?'🏆':'💥'}</div><h2 class="center">${ok?'¡Éxito!':'¡Fracaso!'} ${pct} %</h2>
+ <p class="fx center">${fxText(fx)||'Sin cambios'}</p><button class="big prim" id="go">Tomar una decisión ➜</button>`);
+ on('#go',()=>decide(sc));}
+
+function decide(sc){const ops=sc.op.filter(o=>!o.show||o.show(S));
+ show(`<div class="emoji">${WHO[sc.w]}</div><h2>¿Qué hace ${S.n[sc.w]}?</h2>${ops.map((o,i)=>`<button class="big" data-i="${i}">${tx(o.t)}</button>`).join('')}`);
+ document.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{beep(520,.08);const o=ops[+b.dataset.i];
+  const fx=tx(o.fx);applyFx(fx);const f=tx(o.f);if(f)S.f[f]=true;
+  S.diar[sc.w].push(`(${CAPS[sc.cap].y}) ${tx(o.d)}`);S.q[sc.w].push(tx(o.q));S.i++;save();
+  show(`<h2>Decisión tomada</h2><p class="hand">${tx(o.d)}</p><p class="fx">${fxText(fx)}</p><button class="big prim" id="go">Continuar ➜</button>`);
+  on('#go',()=>{if(Math.random()<.4&&S.i<SC.length)evt();else next();});}));}
+
+function evt(){const e=pick(EVENTS);applyFx(e.fx);save();
+ show(`<p class="small center">Mientras tanto, en Francia…</p><h2 class="center">📰 ${e.t}</h2><p>${e.x}</p><p class="fx center">${fxText(e.fx)}</p><button class="big prim" id="go">Continuar ➜</button>`);
+ beep(300,.3,'square',.08);on('#go',next);}
+
+function modal(h){const m=document.createElement('div');m.className='modal';m.innerHTML='<div class="card">'+h+'<button class="big prim" id="mx">Cerrar</button></div>';
+ document.body.appendChild(m);const x=m.querySelector('#mx');if(x)x.addEventListener('click',()=>m.remove());m.addEventListener('click',e=>{if(e.target===m)m.remove();});}
+function diaries(){if(!S){modal('<h2>📔 Diarios</h2><p>Empieza una partida para que tus personajes escriban.</p>');return;}
+ let h='<h2>📔 Diarios</h2>';['c','n','k','b'].forEach(w=>{h+=`<h3>${WHO[w]} ${S.n[w]}</h3>`+(S.diar[w].length?S.diar[w].map(d=>`<div class="hand">${d}</div>`).join(''):'<p class="small">Aún no ha escrito nada.</p>');});modal(h);}
+function glossary(){modal('<h2>📖 Glosario</h2>'+GLOS.map(g=>`<p><b>${g[0]}:</b> ${g[1]}</p>`).join(''));}
+
+/* ============================================================
+   SECCIÓN 5: MINIJUEGOS
+   ============================================================ */
+function gameFrame(extra){setHTML('#main',`<div class="card"><div class="hud"><span id="sc">Puntos: 0</span><span id="tm"></span></div>${extra}</div>`);}
+function setTxt(id,t){const e=$(id);if(e)e.textContent=t;}
+function countdown(sec,end){let left=sec;setTxt('#tm','⏱ '+left);const id=sI(()=>{left--;setTxt('#tm','⏱ '+Math.max(0,left));if(left<=0){clearInterval(id);end();}},1000);}
+
+const GAMES={
+/* 1. REFLEJOS */
+reflejos(cfg,sp,done){gameFrame('<div class="arena" id="ar"></div>');const ar=$('#ar');let sc=0,goodN=0,fin=false;
+ const spawn=()=>{if(fin||!ar)return;const good=Math.random()<.7;if(good)goodN++;const e=document.createElement('div');e.className='tap';
+  e.textContent=good?pick(cfg.good):pick(cfg.bad);e.style.left=rnd(10,90)+'%';e.style.top=rnd(12,88)+'%';ar.appendChild(e);
+  e.addEventListener('pointerdown',ev=>{ev.preventDefault();if(fin)return;if(good){sc++;sGood();}else{sc-=2;sBad();}setTxt('#sc','Puntos: '+sc);e.remove();});
+  sT(()=>e.remove(),Math.max(800,2000/sp));};
+ sI(spawn,Math.max(300,700/sp));
+ countdown(20,()=>{fin=true;done(goodN?sc/goodN*100/0.8:0);});},
+
+/* 2. CESTA */
+cesta(cfg,sp,done){gameFrame('<div class="arena" id="ar"><div class="it" id="bk" style="font-size:46px">🧺</div></div>');
+ const ar=$('#ar'),bk=$('#bk');if(!ar||!bk)return;let W=ar.clientWidth,H=ar.clientHeight,bx=W/2,sc=0,goodN=0,items=[],dir=0,fin=false;
+ bk.style.top=(H-28)+'px';
+ const mv=e=>{const r=ar.getBoundingClientRect();bx=clamp(e.clientX-r.left,20,W-20);};
+ ar.addEventListener('pointermove',mv);ar.addEventListener('pointerdown',mv);
+ setKey(e=>{if(e.key==='ArrowLeft'){dir=-1;e.preventDefault();}if(e.key==='ArrowRight'){dir=1;e.preventDefault();}});
+ const ku=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight')dir=0;};document.addEventListener('keyup',ku);
+ sI(()=>{if(fin)return;const good=Math.random()<.68;if(good)goodN++;const el=document.createElement('div');el.className='it';el.textContent=good?pick(cfg.good):pick(cfg.bad);
+  ar.appendChild(el);items.push({el,x:rnd(20,W-20),y:-20,v:(110+Math.random()*70)*sp,good});},Math.max(280,650/sp));
+ loop(dt=>{if(fin)return false;bx=clamp(bx+dir*420*dt,20,W-20);bk.style.left=bx+'px';
+  items=items.filter(o=>{o.y+=o.v*dt;o.el.style.left=o.x+'px';o.el.style.top=o.y+'px';
+   if(o.y>H-50&&o.y<H-10&&Math.abs(o.x-bx)<38){if(o.good){sc++;sGood();}else{sc-=2;sBad();}setTxt('#sc','Puntos: '+sc);o.el.remove();return false;}
+   if(o.y>H+20){o.el.remove();return false;}return true;});});
+ countdown(20,()=>{fin=true;document.removeEventListener('keyup',ku);done(goodN?sc/goodN*100/0.75:0);});},
+
+/* 3. RITMO (MINUÉ) */
+ritmo(cfg,sp,done){gameFrame('<div class="arena" id="ar"><div class="zone"></div><div class="lanesep" style="left:25%"></div><div class="lanesep" style="left:50%"></div><div class="lanesep" style="left:75%"></div></div><div class="lanes"><button data-l="0">A</button><button data-l="1">S</button><button data-l="2">D</button><button data-l="3">F</button></div>');
+ const ar=$('#ar');if(!ar)return;const H=ar.clientHeight,zt=H-56,zb=H-12;let notes=[],hits=0,total=0,fin=false;const tones=[392,440,494,523];
+ const hit=l=>{if(fin)return;const n=notes.find(o=>o.l===l&&o.y>=zt-10&&o.y<=zb+10);if(n){hits++;beep(tones[l],.15,'triangle');n.el.remove();notes=notes.filter(o=>o!==n);setTxt('#sc','Aciertos: '+hits);}else beep(120,.08,'square',.05);};
+ document.querySelectorAll('[data-l]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();hit(+b.dataset.l);}));
+ setKey(e=>{const m={a:0,s:1,d:2,f:3}[e.key.toLowerCase()];if(m!==undefined)hit(m);});
+ sI(()=>{if(fin)return;total++;const l=rnd(0,3);const el=document.createElement('div');el.className='it';el.textContent='🎵';el.style.left=(12.5+l*25)+'%';ar.appendChild(el);notes.push({el,l,y:-20});},Math.max(380,800/sp));
+ loop(dt=>{if(fin)return false;notes=notes.filter(o=>{o.y+=170*sp*dt;o.el.style.top=o.y+'px';if(o.y>H+20){o.el.remove();return false;}return true;});});
+ countdown(20,()=>{fin=true;done(total?hits/total*100/0.85:0);});},
+
+/* 4. MEMORIA (SIMON) */
+simon(cfg,sp,done){const tones=[330,415,494,587];
+ setHTML('#main',`<div class="card"><div class="hud"><span id="sc">Ronda 1/3</span><span id="tm">Observa…</span></div><div class="simon">${cfg.b.map((b,i)=>`<button data-s="${i}">${b}</button>`).join('')}</div></div>`);
+ const btn=[...document.querySelectorAll('[data-s]')];let round=0,passed=0,seq=[],pos=0,input=false;const lens=[3,4,5].map(l=>l+(sp>1.6?1:0));
+ const lite=i=>{const b=btn[i];if(!b)return;b.classList.add('lit');beep(tones[i],.25,'triangle');sT(()=>b.classList.remove('lit'),300);};
+ const play=()=>{input=false;setTxt('#tm','Observa…');setTxt('#sc',`Ronda ${round+1}/3`);seq=[];for(let k=0;k<lens[round];k++)seq.push(rnd(0,3));pos=0;
+  const gap=Math.max(380,650/sp);seq.forEach((s,k)=>sT(()=>lite(s),600+k*gap));sT(()=>{input=true;setTxt('#tm','¡Tu turno!');},600+seq.length*gap);};
+ const endRound=ok=>{input=false;if(ok){passed++;sFanfare();}else sBad();round++;if(round>=3)sT(()=>done(passed/3*100),700);else sT(play,900);};
+ btn.forEach((b,i)=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(!input)return;lite(i);if(seq[pos]===i){pos++;if(pos>=seq.length)endRound(true);}else endRound(false);}));
+ play();},
+
+/* 5. CÁLCULO RÁPIDO */
+calc(cfg,sp,done){const qs=[];for(let k=0;k<5;k++)qs.push(makeQ(cfg.kind,k));let qi=0,ok=0;const lim=Math.max(5,Math.round(9/sp));
+ const ask=()=>{clearAll();if(qi>=5)return done(ok/5*100);const q=qs[qi];
+  setHTML('#main',`<div class="card"><div class="hud"><span id="sc">Pregunta ${qi+1}/5 · Aciertos: ${ok}</span><span id="tm"></span></div><p><b>${q.t}</b></p><div class="opts">${q.o.map(v=>`<button data-v="${v}">${v}</button>`).join('')}</div></div>`);
+  document.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>{if(+b.dataset.v===q.a){ok++;sGood();}else sBad();qi++;ask();}));
+  countdown(lim,()=>{sBad();qi++;ask();});};ask();},
+
+/* 6. COMERCIO COLONIAL */
+comercio(cfg,sp,done){let v=0,ok=0;const places=['Burdeos → Saint-Domingue','Nantes → Martinica','Marsella → Levante','Lyon → Cádiz','Le Havre → Guadalupe','Lyon → Génova'];
+ const trip=()=>{clearAll();if(v>=3)return done(ok/3*100);
+  let r;do{r=shuffle(places.slice()).slice(0,3).map(n=>{const c=rnd(10,40)*10;return{n,c,s:c+rnd(5,30)*10,p:false};});r[rnd(0,2)].p=true;}
+  while(new Set(r.map(x=>x.s-x.c)).size<3);
+  const safe=r.filter(x=>!x.p);const best=safe.reduce((a,b)=>(b.s-b.c)>(a.s-a.c)?b:a);
+  setHTML('#main',`<div class="card"><div class="hud"><span>Viaje ${v+1}/3 · Aciertos: ${ok}</span><span id="tm"></span></div><div class="timer" id="tb" style="width:100%"></div>
+  ${r.map((x,i)=>`<button class="route" data-r="${i}">⛵ ${x.n}<br>Compra: ${x.c} libras · Venta: ${x.s} libras ${x.p?'· ☠️ <b>¡Piratas avistados!</b>':''}</button>`).join('')}</div>`);
+  document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const x=r[+b.dataset.r];if(x===best){ok++;sGood();}else sBad();v++;trip();}));
+  const tot=10;let t0=performance.now();loop(()=>{const el=(performance.now()-t0)/1000;const tb=$('#tb');if(tb)tb.style.width=Math.max(0,100-el/tot*100)+'%';setTxt('#tm','⏱ '+Math.max(0,Math.ceil(tot-el)));if(el>=tot){sBad();v++;sT(trip,0);return false;}});};
+ trip();},
+
+/* 7. ESCONDITE */
+escondite(cfg,sp,done){gameFrame(`<div class="arena" id="ar"><div class="it" id="barn" style="left:88%;top:50%;font-size:52px">${cfg.item==='📚'?'🧳':'🛖'}</div><div class="it" id="rec" style="left:5%;top:10%;font-size:38px">🕵️</div></div>`);
+ const ar=$('#ar');if(!ar)return;const N=10;let made=0,hid=0,fin=false;
+ const stash=e=>{if(fin||e.dataset.done)return;e.dataset.done='1';hid++;sGood();setTxt('#sc',`Escondidos: ${hid}/${N}`);e.style.transition='all .3s';e.style.left='88%';e.style.top='50%';e.style.opacity='0';sT(()=>e.remove(),320);};
+ const spawn=()=>{if(fin)return;if(made>=N)return;made++;const e=document.createElement('div');e.className='tap';e.textContent=cfg.item;
+  e.style.left=rnd(8,70)+'%';e.style.top=rnd(15,85)+'%';ar.appendChild(e);
+  let sx=0,sy=0;e.addEventListener('pointerdown',ev=>{ev.preventDefault();sx=ev.clientX;sy=ev.clientY;stash(e);});
+  sT(()=>{if(!e.dataset.done&&!fin){e.dataset.done='1';sBad();e.textContent='❌';sT(()=>e.remove(),300);}},Math.max(700,1600/sp));};
+ sI(spawn,Math.max(450,900/sp));
+ const rec=$('#rec');let rx=5;loop(dt=>{if(fin)return false;rx=Math.min(80,rx+dt*7*sp);if(rec)rec.style.left=rx+'%';});
+ setTxt('#sc',`Escondidos: 0/${N}`);
+ countdown(Math.ceil(N*Math.max(450,900/sp)/1000)+2,()=>{fin=true;done(hid/N*100);});}
+};
+
+function opts(a){const s=new Set([a]);let g=0;while(s.size<3&&g<100){g++;const d=rnd(1,Math.max(3,Math.round(a*.3)))*(Math.random()<.5?-1:1);if(a+d>0)s.add(a+d);}
+ let k=1;while(s.size<3){s.add(a+k*7);k++;}return shuffle([...s]);}
+function makeQ(kind,k){let t,a;const ty=kind==='diezmo'?[0,0,1,2,0][k]:kind==='precios'?[1,2,0,1,2][k]:[3,3,1,3,2][k];
+ if(ty===0){const q=rnd(5,40)*10;a=q/10;t=`Una cosecha de ${q} sacos. ¿Cuántos sacos son el diezmo (10 %)?`;}
+ else if(ty===1){const p=rnd(2,9),n=rnd(3,12);a=p*n;t=`Una hogaza cuesta ${p} sueldos. ¿Cuánto cuestan ${n} hogazas?`;}
+ else if(ty===2){const per=rnd(2,6),f=rnd(3,9);a=per;t=`Hay ${per*f} panes para ${f} familias. ¿Cuántos panes recibe cada familia?`;}
+ else{const p=rnd(2,9)*10,pc=pick([10,20,50]);a=p+p*pc/100;t=`El pan costaba ${p} céntimos y sube un ${pc} %. ¿Cuánto cuesta ahora?`;}
+ return{t,a,o:opts(a)};}
+
+/* ============================================================
+   SECCIÓN 6: FINAL
+   ============================================================ */
+const ENDS={
+rev:{t:'La Revolución francesa',e:'🗽',x:'El Tercer Estado se proclama Asamblea Nacional (17 de junio). En el Juramento del Juego de Pelota (20 de junio) promete no separarse hasta dar una constitución a Francia. El 14 de julio el pueblo de París toma la Bastilla. En agosto se abolen los privilegios y se aprueba la Declaración de los Derechos del Hombre y del Ciudadano. El absolutismo ha terminado.',r:'¡Coincide con la historia! Así ocurrió en 1789.'},
+ham:{t:'La revolución del hambre',e:'🔥',x:'Los motines se extienden por todo el reino: se asaltan graneros y castillos. Pero sin ideas ilustradas ni líderes con un proyecto político, la revuelta no construye un nuevo régimen y el caos se impone.',r:'En la realidad el hambre fue la chispa, pero las ideas ilustradas y la burguesía dieron a la revolución un proyecto político.'},
+ref:{t:'Reforma pacífica: monarquía constitucional',e:'⚖️',x:'Los privilegiados aceptan pagar impuestos y el rey acepta una constitución que divide los poderes, como proponía Montesquieu. Francia se convierte en monarquía constitucional sin derramar sangre.',r:'En la realidad los privilegiados se negaron a perder sus exenciones y la reforma pactada fracasó. Francia probó una monarquía constitucional (1791), pero tras la revolución.'},
+banc:{t:'La bancarrota del Estado',e:'💸',x:'El Tesoro ya no puede pagar ni los intereses. Los banqueros dejan de prestar, los soldados no cobran y el Estado se hunde en el caos financiero.',r:'En la realidad la deuda fue una causa clave: obligó al rey a convocar los Estados Generales, que acabaron desembocando en la revolución.'},
+apl:{t:'La revuelta campesina aplastada',e:'⚔️',x:'Los campesinos se alzan, pero el ejército del rey y de los señores, unidos para defender sus privilegios, sofoca la revuelta. Los cabecillas son ahorcados.',r:'En la realidad el ejército dudó, muchos soldados simpatizaban con el pueblo, y el rey no logró controlar París en julio de 1789.'},
+desp:{t:'El despotismo ilustrado',e:'👑',x:'El rey se rodea de ministros ilustrados y reforma el reino desde arriba: «todo para el pueblo, pero sin el pueblo». Hay mejoras, pero nadie vota.',r:'Este modelo se dio en Prusia, Austria o la España de Carlos III; en Francia los intentos de Turgot o Calonne fracasaron ante los privilegiados.'},
+abs:{t:'El absolutismo resiste',e:'🏰',x:'El rey disuelve los Estados Generales y todo sigue igual: estamentos, privilegios y monarquía absoluta. Por ahora.',r:'En la realidad el Antiguo Régimen ya no podía sostenerse: deuda, hambre e ideas nuevas lo derribaron en 1789.'}
+};
+const END_ORDER=['rev','ham','ref','banc','apl','desp','abs'];
+
+function prob(){const I=S.ind,f=S.f;let p=-5+I.h*.25+I.d*.2+I.i*.2+I.p*.15+S.t*.15;
+ if(f.rechazo)p+=8;if(f.porCabeza)p+=8;if(f.motin)p+=6;if(f.motinPrevio)p+=3;if(f.especula)p+=5;if(f.protesta)p+=3;if(f.uneTercer)p+=4;
+ if(f.reformaNoble)p-=10;if(f.iglesiaPaga)p-=8;if(f.graneros)p-=5;if(f.liberal)p-=3;return clamp(Math.round(p),5,95);}
+function chooseEnd(roll,p){const I=S.ind,f=S.f;
+ if(roll<=p)return I.i>=45?'rev':'ham';
+ if(I.d>=85)return'banc';
+ if((f.motin||f.motinPrevio)&&I.p>=55)return'apl';
+ if((f.reformaNoble||f.iglesiaPaga)&&I.i>=50)return'ref';
+ if(I.i>=45)return'desp';return'abs';}
+
+function finale1(){delSave();
+ show(`<div class="emoji">🏛️</div><h2 class="center">5 de mayo de 1789</h2><p class="center">En Versalles se reúnen los Estados Generales. Unos 1.200 diputados: el clero de negro y oro, la nobleza con plumas y encajes, el Tercer Estado vestido de negro sencillo. Cada estamento trae sus cuadernos de quejas.</p><button class="big prim" id="go">Leer los cuadernos de quejas ➜</button>`);
+ sFanfare();on('#go',finale2);}
+function finale2(){let h='<h2>📜 Cuadernos de quejas</h2>';
+ ['c','n','k','b'].forEach(w=>{const est={c:'Tercer Estado (campesinos)',n:'Nobleza',k:'Clero',b:'Tercer Estado (burguesía)'}[w];
+  h+=`<h3>${WHO[w]} ${S.n[w]} — ${est}</h3><div class="hand">Señor: nosotros, fieles súbditos de Vuestra Majestad, humildemente exponemos: ${S.q[w].join(' ')} Firmado: ${S.n[w]}.</div>`;});
+ show(h+'<button class="big prim" id="go">Revelar la tensión social ➜</button>');on('#go',finale3);}
+function finale3(){const p=prob();
+ show(`<h2 class="center">🌡️ Tensión social oculta</h2><div class="bar">Tensión: ${S.t}/100<div class="tr"><div class="fi" style="width:${S.t}%"></div></div></div>
+ <p>${S.t>=70?'El reino es un polvorín.':S.t>=45?'El descontento es profundo.':'El reino está inquieto, pero contenido.'}</p>
+ <h2 class="center">Tus decisiones dieron un ${p} % de probabilidad de revolución</h2><p class="center">Si el dado saca ${p} o menos, estallará la revolución.</p>
+ <div class="dice" id="dice">🎲</div><button class="big prim" id="go">🎲 Lanzar el dado</button>`);
+ on('#go',()=>{const b=$('#go');if(b)b.remove();const d=$('#dice');if(d)d.classList.add('spin');const roll=rnd(1,100);let n=0;
+  const id=sI(()=>{n++;setTxt('#dice',rnd(1,100));beep(200+rnd(0,400),.04,'square',.06);if(n>=25){clearInterval(id);if(d)d.classList.remove('spin');setTxt('#dice',roll);
+   const e=chooseEnd(roll,p);sT(()=>finale4(e,roll,p),1200);}},80);});}
+function finale4(id,roll,p){const E=ENDS[id];const n=addEnd(id);sFanfare();
+ show(`<p class="center small">Dado: ${roll} · Probabilidad: ${p} %</p><div class="emoji">${E.e}</div><h2 class="center">${E.t}</h2><p>${E.x}</p>
+ <p class="center"><b>Finales descubiertos: ${n}/7</b></p><button class="big prim" id="go">📚 Lo que pasó en realidad… ➜</button>`);
+ on('#go',()=>finale5(id));}
+function finale5(id){const E=ENDS[id];
+ show(`<h2>📚 Lo que pasó en realidad…</h2><p><b>${E.r}</b></p>
+ <p>La Revolución de 1789 tuvo varias causas que se sumaron. La primera fue <b>política</b>: una monarquía absoluta incapaz de reformarse. La segunda, <b>social</b>: una sociedad estamental en la que una minoría privilegiada no pagaba y una burguesía rica no tenía poder. La tercera, <b>económica</b>: la enorme deuda, agravada por la guerra de América, y la crisis de subsistencias de 1788–1789. La cuarta, <b>ideológica</b>: la Ilustración, que ofreció una alternativa basada en la soberanía nacional, la división de poderes y la igualdad ante la ley.</p>
+ <p>La chispa saltó cuando los privilegiados se negaron a pagar impuestos y el Tercer Estado exigió el voto por cabeza en los Estados Generales.</p>
+ <p class="small">En tu partida: hambre ${S.ind.h}, deuda ${S.ind.d}, ideas ${S.ind.i}, privilegios ${S.ind.p}, tensión ${S.t}.</p>
+ <button class="big prim" id="go">Epílogo ➜</button>`);on('#go',epilogue);}
+function epilogue(){const f=S.f,n=S.n;
+ const c=f.motin?`${n.c} fue uno de los primeros en marchar con las multitudes; su nombre aparece en las listas de los motines de 1789.`:f.paris?`${n.c} se quedó en París y trabajó como jornalero en el barrio de Saint-Antoine, cerca de la Bastilla.`:`${n.c} siguió cultivando su tierra en Champaña, esperando que el rey leyera sus quejas.`;
+ const no=f.especula?`${n.n} se enriqueció con el trigo, pero acabó odiado por el pueblo y emigró al extranjero.`:f.liberal||f.reformaNoble?`${n.n} fue uno de los nobles liberales que apoyaron las reformas y renunciaron a sus privilegios.`:`${n.n} defendió los privilegios hasta el final y vio cómo su mundo se desmoronaba.`;
+ const k=f.uneTercer?`${n.k} se unió a los diputados del Tercer Estado, como hicieron muchos curas en junio de 1789.`:f.graneros||f.perdona?`${n.k} fue recordado por los pobres como un clérigo justo y caritativo.`:`${n.k} defendió los bienes y privilegios de la Iglesia ante los nuevos tiempos.`;
+ const b=f.porCabeza||f.club?`${n.b} se convirtió en una voz destacada de la política de Lyon; algunas mujeres como ella reclamarían también sus derechos, como Olympe de Gouges en 1791.`:f.titulo?`${n.b} logró su cargo ennoblecedor… justo cuando los títulos empezaban a perder su valor.`:`${n.b} siguió al frente de su tienda de sedas, atenta a las noticias de París.`;
+ show(`<h2>📖 Epílogo</h2><p>🧑‍🌾 ${c}</p><p>🎩 ${no}</p><p>⛪ ${k}</p><p>🧵 ${b}</p><p class="center"><b>Finales descubiertos: ${getEnds().length}/7</b></p>
+ <button class="big prim" id="again">🔄 Jugar otra vez</button><button class="big" id="dg">📖 Glosario</button><button class="big" id="dd">📔 Diarios</button>`);
+ on('#again',()=>{S=null;create();});on('#dg',glossary);on('#dd',diaries);}
+
+/* ============================================================
+   SECCIÓN 7: ARRANQUE
+   ============================================================ */
+on('#bDiar',diaries);on('#bGlos',glossary);
+on('#bSnd',()=>{soundOn=!soundOn;setTxt('#bSnd',soundOn?'🔊':'🔇');});
+on('#bMenu',()=>{if(!S||confirm('¿Volver al menú? La partida se guardó al terminar la última escena.'))menu();});
+menu();
+</script>
+</body>
+</html>
